@@ -4,6 +4,7 @@
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg?style=for-the-badge)](https://ktlint.github.io/)
 [![License MIT](https://img.shields.io/github/license/adrielcafe/voyager.svg?style=for-the-badge&color=orange)](https://opensource.org/licenses/MIT)
 
+<h3 align="center"> forked for use in a personal project needing to use composable as node content</h3>
 <h1 align="center">
     <img height="80" src="https://user-images.githubusercontent.com/2512298/163075335-494c2a4d-e446-4627-8865-183683a75834.png"/>
     <br>

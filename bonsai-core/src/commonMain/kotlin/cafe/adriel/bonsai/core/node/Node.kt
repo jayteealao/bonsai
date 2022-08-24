@@ -25,6 +25,8 @@ public sealed interface Node<T> {
     public val iconComponent: NodeComponent<T>
 
     public val nameComponent: NodeComponent<T>
+
+    public val contentComponent: NodeComponent<T>?
 }
 
 public class LeafNode<T> internal constructor(
@@ -32,9 +34,10 @@ public class LeafNode<T> internal constructor(
     override val depth: Int,
     override val key: String = randomUUID,
     override val name: String = content.toString(),
-    override val iconComponent: NodeComponent<T> = { DefaultNodeIcon(it) },
-    override val nameComponent: NodeComponent<T> = { DefaultNodeName(it) }
-) : Node<T>,
+    override val iconComponent: @Composable BonsaiScope<T>.(Node<T>) -> Unit = { DefaultNodeIcon(it) },
+    override val nameComponent: NodeComponent<T> = { DefaultNodeName(it) },
+    override val contentComponent: NodeComponent<T>? = null
+): Node<T>,
     SelectableNode by SelectableNodeHandler()
 
 public class BranchNode<T> internal constructor(
@@ -42,8 +45,9 @@ public class BranchNode<T> internal constructor(
     override val depth: Int,
     override val key: String = randomUUID,
     override val name: String = content.toString(),
-    override val iconComponent: NodeComponent<T> = { DefaultNodeIcon(it) },
-    override val nameComponent: NodeComponent<T> = { DefaultNodeName(it) }
-) : Node<T>,
+    override val iconComponent: @Composable BonsaiScope<T>.(Node<T>) -> Unit = { DefaultNodeIcon(it) },
+    override val nameComponent: NodeComponent<T> = { DefaultNodeName(it) },
+    override val contentComponent: NodeComponent<T>? = null
+): Node<T>,
     SelectableNode by SelectableNodeHandler(),
     ExpandableNode by ExpandableNodeHandler()

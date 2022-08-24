@@ -35,6 +35,77 @@ public fun <T> TreeScope.Leaf(
 }
 
 @Composable
+public fun <T> TreeScope.CustomLeaf(
+    content: T,
+    customIcon: NodeComponent<T>? = null,
+    customName: NodeComponent<T>? = null,
+    name: String = content.toString(),
+    customContent: NodeComponent<T>? = null
+) {
+    val (isSelected, setSelected) = rememberSaveable { mutableStateOf(false) }
+
+    ComposeNode<LeafNode<T>, TreeApplier<T>>(
+        factory = {
+            LeafNode(
+                content = content,
+                name = name,
+                depth = depth,
+                iconComponent = customIcon ?: { DefaultNodeIcon(it) },
+                nameComponent = customName ?: { DefaultNodeName(it) },
+                contentComponent = customContent
+            )
+        },
+        update = {
+            set(isSelected) { this.isSelectedState = isSelected }
+            set(setSelected) { this.onToggleSelected = setSelected }
+        }
+    )
+}
+
+@Composable
+public fun <T> TreeScope.CustomBranch(
+    content: T,
+    customIcon: NodeComponent<T> = { DefaultNodeIcon(it) },
+    customName: NodeComponent<T> = { DefaultNodeName(it) },
+    name: String = content.toString(),
+    customContent: NodeComponent<T>? = null,
+    children: @Composable TreeScope.() -> Unit = {}
+) {
+    val (isSelected, setSelected) = rememberSaveable { mutableStateOf(false) }
+    val (isExpanded, setExpanded) = rememberSaveable { mutableStateOf(isExpanded && depth <= expandMaxDepth) }
+    val (expandMaxDepth, setExpandMaxDepth) = rememberSaveable { mutableStateOf(expandMaxDepth) }
+
+    ComposeNode<BranchNode<T>, TreeApplier<T>>(
+        factory = {
+            BranchNode(
+                content = content,
+                name = name,
+                depth = depth,
+                iconComponent = customIcon,
+                nameComponent = customName,
+                contentComponent = customContent
+            )
+        },
+        update = {
+            set(isSelected) { this.isSelectedState = isSelected }
+            set(setSelected) { this.onToggleSelected = setSelected }
+            set(isExpanded) { this.isExpandedState = isExpanded }
+            set(setExpanded) {
+                this.onToggleExpanded = { isExpanded, maxDepth ->
+                    setExpanded(isExpanded)
+                    setExpandMaxDepth(maxDepth)
+                }
+            }
+        }
+    )
+
+    if (isExpanded && depth <= expandMaxDepth) {
+        TreeScope(depth.inc(), isExpanded, expandMaxDepth)
+            .children()
+    }
+}
+
+@Composable
 public fun <T> TreeScope.Branch(
     content: T,
     customIcon: NodeComponent<T>? = null,

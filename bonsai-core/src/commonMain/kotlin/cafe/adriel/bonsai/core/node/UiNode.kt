@@ -82,7 +82,11 @@ private fun <T> BonsaiScope<T>.NodeContent(
     ) {
         with(node) {
             iconComponent(node)
-            nameComponent(node)
+            if (node.contentComponent != null) {
+                contentComponent?.invoke(this@NodeContent, node)
+            } else {
+                nameComponent(node)
+            }
         }
     }
 }
